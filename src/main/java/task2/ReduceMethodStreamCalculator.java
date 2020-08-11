@@ -4,15 +4,20 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class ReduceMethodStreamCalculator {
-    public String countNumbersWithFilter(Stream<String> stream) {
-        return "using filter: " + stream.filter(string -> {
+    private Stream<Integer> filterNumbers(Stream<String> stringStream) {
+        return stringStream.filter(string -> {
             try {
                 Integer.parseInt(string);
+                return true;
             } catch (NumberFormatException e) {
                 return false;
             }
-            return true;
         })
+                .map(Integer::parseInt);
+    }
+
+    public String countNumbersWithFilter(Stream<String> stream) {
+        return "using filter: " + filterNumbers(stream)
                 .reduce(0, (first, second) -> first + 1, (first, second) -> 0);
     }
 
@@ -30,16 +35,7 @@ public class ReduceMethodStreamCalculator {
     }
 
     public String getMaxNumber(Stream<String> stream) {
-        return "3.1 with map, max: " + stream
-                .filter(string -> {
-                    try {
-                        Integer.parseInt(string);
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                    return true;
-                })
-                .map(Integer::parseInt)
+        return "3.1 with map, max: " + filterNumbers(stream)
                 .reduce((first, second) -> first > second ? first : second);
     }
 
@@ -57,50 +53,24 @@ public class ReduceMethodStreamCalculator {
     }
 
     public String sumStream(Stream<String> stream) {
-        return "3.3 with map, sum: " + stream
-                .filter(string -> {
-                    try {
-                        Integer.parseInt(string);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                })
-                .map(Integer::parseInt)
+        return "3.3 with map, sum: " + filterNumbers(stream)
                 .reduce(0, Integer::sum);
     }
 
     public String reduceToArray(Stream<String> stream) {
-        return "3.4 with map, into array: " + Arrays.toString(stream
-                .filter(string -> {
-                    try {
-                        Integer.parseInt(string);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                })
-                .map(Integer::parseInt)
-                .reduce(new Integer[]{}, (numbersArray, nextNumber) -> {
-                            Integer[] arrayWithNextNumber = new Integer[numbersArray.length + 1];
-                            System.arraycopy(numbersArray, 0, arrayWithNextNumber, 0, numbersArray.length);
-                            arrayWithNextNumber[arrayWithNextNumber.length - 1] = nextNumber;
-                            return arrayWithNextNumber;
-                        },
-                        (numbersArray, second) -> numbersArray));
+        return "3.4 with map, into array: " + Arrays.toString(
+                filterNumbers(stream)
+                        .reduce(new Integer[]{}, (numbersArray, nextNumber) -> {
+                                    Integer[] arrayWithNextNumber = new Integer[numbersArray.length + 1];
+                                    System.arraycopy(numbersArray, 0, arrayWithNextNumber, 0, numbersArray.length);
+                                    arrayWithNextNumber[arrayWithNextNumber.length - 1] = nextNumber;
+                                    return arrayWithNextNumber;
+                                },
+                                (numbersArray, second) -> numbersArray));
     }
 
     public String reduceToSet(Stream<String> stream) {
-        return "3.5 with map, into Set: " + stream
-                .filter(string -> {
-                    try {
-                        Integer.parseInt(string);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                })
-                .map(Integer::parseInt)
+        return "3.5 with map, into Set: " + filterNumbers(stream)
                 .reduce(new HashSet<Integer>(), (set, number) -> {
                     set.add(number);
                     return set;
@@ -108,16 +78,7 @@ public class ReduceMethodStreamCalculator {
     }
 
     public String reduceToMap(Stream<String> stream) {
-        return "3.6 with map, into Map<Boolean, List<Integer>>: " + stream
-                .filter(string -> {
-                    try {
-                        Integer.parseInt(string);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                })
-                .map(Integer::parseInt)
+        return "3.6 with map, into Map<Boolean, List<Integer>>: " + filterNumbers(stream)
                 .reduce(new HashMap<Boolean, List<Integer>>(), (map, number) -> {
                             boolean isEven = number % 2 == 0;
                             List<Integer> listOfNumbers = map.getOrDefault(isEven, new ArrayList<>());
@@ -128,3 +89,4 @@ public class ReduceMethodStreamCalculator {
                         (map, number) -> map);
     }
 }
+
