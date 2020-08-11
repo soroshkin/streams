@@ -3,12 +3,12 @@ package task1;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class MergeStreamsApp {
+public class MergeStreams {
     public static void main(String[] args) {
-        MergeStreamsApp mergeStreamsApp = new MergeStreamsApp();
-        Stream<Integer> firstStream = mergeStreamsApp.createStreamWithStreamBuilder();
-        Stream<Integer> secondStream = mergeStreamsApp.createStreamWithOfMethod();
-        Stream<Integer> thirdStream = mergeStreamsApp.createStreamWithGenerateMethod();
+        MergeStreams mergeStreams = new MergeStreams();
+        Stream<Integer> firstStream = mergeStreams.createStreamWithStreamBuilder();
+        Stream<Integer> secondStream = mergeStreams.createStreamWithOfMethod();
+        Stream<Integer> thirdStream = mergeStreams.createStreamWithGenerateMethod();
 
         Stream.of(firstStream, secondStream, thirdStream)
                 .flatMap(i -> i)
